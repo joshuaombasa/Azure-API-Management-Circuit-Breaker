@@ -1,0 +1,29 @@
+<inbound>
+    <base />
+
+    <!-- Rate Limit: Allow only 5 requests per 10 seconds per client -->
+    <rate-limit-by-key calls="5" renewal-period="10" counter-key="@(context.Request.IpAddress)" />
+
+    <!-- Retry Policy: Retry failed requests up to 3 times -->
+    <retry count="3" interval="2" />
+
+    <!-- Timeout Policy: Fail requests taking longer than 3 seconds -->
+    <forward-request timeout="3" />
+
+</inbound>
+
+<backend>
+    <base />
+</backend>
+
+<outbound>
+    <base />
+</outbound>
+
+<on-error>
+    <base />
+    <!-- Custom error message when circuit is open -->
+    <set-body>
+        Service is temporarily unavailable. Please try again later.
+    </set-body>
+</on-error>
